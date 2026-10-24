@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from planner.plan import plan_trip
 from planner.services.geocoding import GeocodeError, search_places
 from planner.services.routing import RoutingError
+from planner.services.weather import WeatherError
 
 logger = logging.getLogger(__name__)
 
@@ -67,9 +68,15 @@ def plan(request):
         return _error(str(exc))
     except RoutingError as exc:
         return _error(str(exc), status.HTTP_502_BAD_GATEWAY)
-    except Exception:
+    except WeatherError as exc:
+        logger.exception("Weather failed")
+        return _error(f"Could not load forecast weather. {exc}", status.HTTP_502_BAD_GATEWAY)
+    except Exception as exc:
         logger.exception("Plan failed")
-        return _error("Could not plan routes right now. Try a shorter trip or a later departure.", 502)
+        return _error(
+            f"Could not plan routes right now. {exc}",
+            status.HTTP_502_BAD_GATEWAY,
+        )
 
 
 def _maybe_float(value) -> float | None:

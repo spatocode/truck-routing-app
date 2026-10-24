@@ -3,7 +3,7 @@ from __future__ import annotations
 import httpx
 from django.conf import settings
 
-DEFAULT_TIMEOUT = httpx.Timeout(25.0, connect=10.0)
+DEFAULT_TIMEOUT = httpx.Timeout(40.0, connect=15.0)
 
 
 def client() -> httpx.Client:

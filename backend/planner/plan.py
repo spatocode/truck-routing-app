@@ -26,6 +26,13 @@ def _eta_for_mile(departure: datetime, total_miles: float, duration_seconds: flo
     return departure + timedelta(seconds=duration_seconds * fraction)
 
 
+def _cap_points(points: list[LatLon], limit: int = 72) -> list[LatLon]:
+    if len(points) <= limit:
+        return points
+    step = max(1, round(len(points) / limit))
+    return points[::step][:limit]
+
+
 def _thin_points(points: list[LatLon], max_points: int = 220) -> list[LatLon]:
     if len(points) <= max_points:
         return points
@@ -92,7 +99,7 @@ def plan_trip(
     route_samples: list[list[tuple[LatLon, float]]] = [
         sample_along_path(route.geometry, float(sample_miles)) for route in raw_routes
     ]
-    heatmap_points = corridor_grid([route.geometry for route in raw_routes])
+    heatmap_points = _cap_points(corridor_grid([route.geometry for route in raw_routes]), limit=72)
 
     weather_points: list[LatLon] = []
     for samples in route_samples:

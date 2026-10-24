@@ -101,7 +101,7 @@ Coordinates are optional. If omitted, the backend geocodes the labels.
 
 The assessment asks for a hosted app. A simple split:
 
-- Backend on Render / Railway / Fly using `backend/Dockerfile` (timeout ≥ 120s; a plan request fetches routes and batched weather)
+- Backend on Render / Railway / Fly using `backend/Dockerfile` (timeout ≥ 120s; a plan request fetches routes and weather. Open-Meteo is batched, then retried per checkpoint if the host rejects multi-location requests.)
 - Frontend on Cloudflare Pages / Netlify / Render static, with `VITE_API_URL` pointing at the API origin and that origin listed in `CORS_ALLOWED_ORIGINS`
 
 Or run `docker compose` on a single VM and put TLS in front of port 8080. Nginx in the web image already proxies `/api` to the API service.
