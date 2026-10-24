@@ -1,0 +1,18 @@
+services:
+  api:
+    build: ./backend
+    env_file:
+      - .env
+    environment:
+      DJANGO_DEBUG: "false"
+      ALLOWED_HOSTS: "*"
+      CORS_ALLOW_ALL_ORIGINS: "true"
+    ports:
+      - "8000:8000"
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
